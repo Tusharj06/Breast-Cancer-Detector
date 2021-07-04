@@ -1,0 +1,29 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import metrics
+data=pd.read_csv('data1.csv')
+diag=pd.get_dummies(data['diagnosis'],drop_first=True)
+data=pd.concat([data,diag],axis=1)
+data.drop(['id','diagnosis','Unnamed: 32'],axis=1,inplace=True)
+x=data.drop('M',axis=1)
+y=data["M"]
+xtrain,xtest,ytrain,ytest=train_test_split(x,y,test_size=0.3)
+model=RandomForestClassifier()
+model.fit(xtrain,ytrain)
+print(model.score(xtest,ytest))
+predictions=model.predict(xtest)
+from sklearn.metrics import confusion_matrix
+cm=confusion_matrix(ytest,predictions )
+report=metrics.classification_report(ytest,predictions)
+
+# Models which worked well (best to worst) are:
+# RandomForestClassifier
+# LogisticRegression
+# SVM(kernel='linear')
+# Naive Bayes GaussionNB
+# KNeighborsClassifier
